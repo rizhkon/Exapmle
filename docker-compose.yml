@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    command: gunicorn -w 10 -k uvicorn.workers.UvicornWorker --timeout 600 -b 0.0.0.0 main:app --reload
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_SERVER=${POSTGRES_SERVER}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - MINIO_BACK_HOST=${MINIO_BACK_HOST}
+      - ES_HOST=${ES_HOST}
+      - ES_PORT=${ES_PORT}
+      - AUTH_URL=${AUTH_URL}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - NIFI_SECRET_KEY=${NIFI_SECRET_KEY}
+      - OTHER_SERVICE_SECRET_KEY=${OTHER_SERVICE_SECRET_KEY}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - FTP_SECRET_KEY=${FTP_SECRET_KEY}
+      - BUCKET_FOR_COPY=${BUCKET_FOR_COPY}
+      - REQUEST_MINIO_SECRET=${REQUEST_MINIO_SECRET}
+      - BUCKET_FOR_UPLOAD=${BUCKET_FOR_UPLOAD}
+      - PLICANTE_API=${PLICANTE_API}
+      - PLICANTE_API_KEY=${PLICANTE_API_KEY}
+      - STYLE_DIR=${STYLE_DIR}
+      - MOCKUP_DIR=${MOCKUP_DIR}
+      - PROJECTION_DIR=${PROJECTION_DIR}
+      - TEMP_DIR_PATH=${TEMP_DIR_PATH}
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "1"
